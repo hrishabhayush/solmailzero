@@ -85,7 +85,7 @@ export default function HomeContent() {
           className="text-center text-4xl font-medium md:text-6xl"
         >
           <Balancer className="mb-3 max-w-[1130px]">
-            AI Powered Email, Built to Save You Time
+            Cold emails that actually get replies, spend only for successful conversions
           </Balancer>
         </motion.h1>
         <motion.p
@@ -94,30 +94,8 @@ export default function HomeContent() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mx-auto mb-4 max-w-2xl text-center text-base font-medium text-[#B7B7B7] md:text-lg"
         >
-          Zero is an AI-native email client that manages your inbox, so you don't have to.
+          sol0mail is an AI-native email built on top of Zero with micropayments for successful conversions and only paying when client replies relevantly
         </motion.p>
-        <p className="mb-4 ml-0.5 text-xs text-[#B7B7B7]/60">No credit card required.</p>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="border-input/50 mb-6 inline-flex items-center gap-4 rounded-full border border-[#2A2A2A] bg-[#1E1E1E] px-4 py-1"
-        >
-          <Link to="https://yc.vc" target="_blank" className="flex items-center gap-2 text-sm">
-            Backed by
-            <span>
-              <img
-                src="/yc-small.svg"
-                alt="Y Combinator"
-                className="rounded-[2px]"
-                width={18}
-                height={18}
-              />
-            </span>
-            Combinator
-          </Link>
-        </motion.div>
-
         {/* Get Started button only visible for mobile screens */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -204,7 +182,7 @@ export default function HomeContent() {
           className="flex items-center justify-center"
         >
           <h1 className="text-lg font-light text-white/40 md:text-xl">
-            Designed for power users who value time
+            Designed for power users who want results and don't want to waste time
           </h1>
         </motion.div>
         <motion.div
@@ -214,10 +192,10 @@ export default function HomeContent() {
           className="mt-2 flex flex-col items-center justify-center md:mt-8"
         >
           <h1 className="text-center text-4xl font-medium text-white md:text-6xl">
-            Speed Is Everything
+            Write emails with AI
           </h1>
           <h1 className="mb-3 text-center text-4xl font-medium text-white/40 md:text-6xl">
-            Reply in seconds
+            Payments settled with x402 
           </h1>
         </motion.div>
         <motion.div
@@ -1070,7 +1048,7 @@ export default function HomeContent() {
             className="relative flex w-full items-center justify-center"
           >
             <div className="relative mx-auto flex h-[587px] w-full max-w-[894px] items-center justify-center rounded-xl">
-              <div className="absolute left-0 top-[319px] mx-auto inline-flex w-full max-w-[894px] flex-col items-start justify-start overflow-hidden rounded-xl bg-zinc-900 opacity-30">
+              <div className="absolute left-0 top-[300px] mx-auto inline-flex w-full max-w-[894px] flex-col items-start justify-start overflow-hidden rounded-xl bg-zinc-900 opacity-30">
                 <div className="inline-flex items-center justify-start gap-1.5 self-stretch px-5 pb-4 pt-7">
                   <div className="flex flex-1 items-center justify-start gap-1.5">
                     <div className="justify-start text-sm leading-none text-[#8C8C8C]">Pinned</div>
@@ -1280,51 +1258,7 @@ export default function HomeContent() {
         </div>
       </div>
 
-      {/* <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative hidden lg:block"
-      >
-        <div className="mx-auto max-w-[920px] text-center text-4xl font-normal leading-[48px] text-white">
-          <span className="text-[#B7B7B7]">Work smarter, not harder.</span>{' '}
-          <span className="pr-12 text-white">Automate repetitive</span>{' '}
-          <span className="text-[#B7B7B7]">email</span>
-          <span className="text-[#B7B7B7]"> tasks with</span>{' '}
-          <span className="pr-14 text-white">smart templates, </span>{' '}
-          <span className="text-white">scheduled sends</span>
-          <span className="text-[#B7B7B7]">
-            , follow-up reminders, and batch processing capabilities that
-          </span>{' '}
-          <br />
-          <span className="text-white underline">save hours every week.</span>
-        </div>
-        <div className="flex items-center justify-center">
-          <img
-            className="relative bottom-12 right-[162px]"
-            src="/verified-home.png"
-            alt="tasks"
-            width={50}
-            height={50}
-          />
-          <img
-            className="relative bottom-[145px] right-[47px]"
-            src="/snooze-home.png"
-            alt="tasks"
-            width={50}
-            height={50}
-          />
-          <img
-            className="relative bottom-[195px] left-[210px]"
-            src="/star-home.png"
-            alt="tasks"
-            width={50}
-            height={50}
-          />
-        </div>
-      </motion.div> */}
-
-      <div className="relative mt-52 flex items-center justify-center">
+      <div className="relative flex items-center justify-center">
         <Footer />
       </div>
     </main>
