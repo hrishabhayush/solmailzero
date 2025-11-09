@@ -3,15 +3,6 @@ import { composeEmail } from '../trpc/routes/ai/compose';
 import { type ParsedMessage } from '../types';
 import { connection } from '../db/schema';
 
-const dontReplyTo = new Set([
-  'no-reply@gmail.com',
-  'noreply@gmail.com',
-  'do-not-reply@gmail.com',
-  'do-not-reply@gmail.com',
-  'notifications@github.com',
-  'info@e-mail.xing.com',
-]);
-
 const shouldGenerateDraft = async (
   thread: IGetThreadResponse,
   foundConnection: typeof connection.$inferSelect,
@@ -44,11 +35,6 @@ const shouldGenerateDraft = async (
     console.log(
       '[SHOULD_GENERATE_DRAFT] Message is likely automated or not actionable, skipping draft',
     );
-    return false;
-  }
-
-  if (dontReplyTo.has(senderEmail)) {
-    console.log('[SHOULD_GENERATE_DRAFT] Message is from a dont reply to email, skipping draft');
     return false;
   }
 
@@ -139,9 +125,7 @@ const generateAutomaticDraft = async (
       connectionId,
     });
 
-    const draftNewLines = draftContent.replace(/\n/g, '<br>');
-
-    return draftNewLines;
+    return draftContent;
   } catch (error) {
     console.log('[THREAD_WORKFLOW] Failed to generate automatic draft:', {
       connectionId,

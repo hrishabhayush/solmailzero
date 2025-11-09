@@ -37,12 +37,7 @@ export const createDraftData = z.object({
 export type CreateDraftData = z.infer<typeof createDraftData>;
 
 export const mailCategorySchema = z.object({
-  id: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9\-_ ]+$/,
-      'Category ID must contain only alphanumeric characters, hyphens, underscores, and spaces',
-    ),
+  id: z.enum(['Important', 'All Mail', 'Personal', 'Promotions', 'Updates', 'Unread']),
   name: z.string(),
   searchValue: z.string(),
   order: z.number().int(),
@@ -56,7 +51,7 @@ export const defaultMailCategories: MailCategory[] = [
   {
     id: 'Important',
     name: 'Important',
-    searchValue: 'IMPORTANT',
+    searchValue: 'is:important NOT is:sent NOT is:draft',
     order: 0,
     icon: 'Lightning',
     isDefault: false,
@@ -64,15 +59,39 @@ export const defaultMailCategories: MailCategory[] = [
   {
     id: 'All Mail',
     name: 'All Mail',
-    searchValue: '',
+    searchValue: 'NOT is:draft (is:inbox OR (is:sent AND to:me))',
     order: 1,
     icon: 'Mail',
     isDefault: true,
   },
   {
+    id: 'Personal',
+    name: 'Personal',
+    searchValue: 'is:personal NOT is:sent NOT is:draft',
+    order: 2,
+    icon: 'User',
+    isDefault: false,
+  },
+  {
+    id: 'Promotions',
+    name: 'Promotions',
+    searchValue: 'is:promotions NOT is:sent NOT is:draft',
+    order: 3,
+    icon: 'Tag',
+    isDefault: false,
+  },
+  {
+    id: 'Updates',
+    name: 'Updates',
+    searchValue: 'is:updates NOT is:sent NOT is:draft',
+    order: 4,
+    icon: 'Bell',
+    isDefault: false,
+  },
+  {
     id: 'Unread',
     name: 'Unread',
-    searchValue: 'UNREAD',
+    searchValue: 'is:unread NOT is:sent NOT is:draft',
     order: 5,
     icon: 'ScanEye',
     isDefault: false,
@@ -109,7 +128,6 @@ export const userSettingsSchema = z.object({
   zeroSignature: z.boolean().default(true),
   categories: categoriesSchema.optional(),
   defaultEmailAlias: z.string().optional(),
-  undoSendEnabled: z.boolean().default(false),
   imageCompression: z.enum(['low', 'medium', 'original']).default('medium'),
   autoRead: z.boolean().default(true),
   animations: z.boolean().default(false),
@@ -130,7 +148,6 @@ export const defaultUserSettings: UserSettings = {
   autoRead: true,
   defaultEmailAlias: '',
   categories: defaultMailCategories,
-  undoSendEnabled: false,
   imageCompression: 'medium',
   animations: false,
 };

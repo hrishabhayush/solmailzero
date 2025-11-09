@@ -165,13 +165,8 @@
       "attachments": "Ekler",
       "attachmentCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "ekler",
             "countPlural=one": "ek",
@@ -181,13 +176,8 @@
       ],
       "fileCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "dosyalar",
             "countPlural=one": "dosya",
@@ -259,13 +249,8 @@
       "search": "Notlarda ara...",
       "noteCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "Not ekle",
             "countPlural=one": "# not",
@@ -327,13 +312,8 @@
     "mail": {
       "replies": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "cevaplar",
             "countPlural=one": "# yanıt",
@@ -436,7 +416,7 @@
       "signatures": "İmzalar",
       "shortcuts": "Kısayollar",
       "labels": "Etiketler",
-      "categories": "Görünümler",
+      "categories": "Kategoriler",
       "dangerZone": "Tehlikeli Bölge",
       "deleteAccount": "Hesabı Sil",
       "privacy": "Gizlilik"
@@ -468,8 +448,6 @@
         "noResultsFound": "Sonuç bulunamadı",
         "zeroSignature": "Zero İmzası",
         "zeroSignatureDescription": "E-postalarınıza Zero imzası ekleyin.",
-        "undoSendEnabled": "Gönderimi Geri Al",
-        "undoSendEnabledDescription": "E-postaları gönderdikten sonra 30 saniye içinde iptal etmeye izin ver.",
         "defaultEmailAlias": "Varsayılan E-posta Adresi",
         "selectDefaultEmail": "Varsayılan e-postayı seç",
         "defaultEmailDescription": "Bu e-posta, yeni e-postalar oluştururken varsayılan 'Kimden' adresi olarak kullanılacaktır",

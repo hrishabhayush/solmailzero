@@ -535,7 +535,7 @@ export class OutlookMailManager implements MailManager {
     return this.withErrorHandler(
       'sendDraft',
       async () => {
-        await this.graphClient.api(`/me/messages/${draftId}/send`).post({});
+        await this.graphClient.api(`/me/drafts/${draftId}/send`).post({});
       },
       { draftId, data },
     );
@@ -559,15 +559,6 @@ export class OutlookMailManager implements MailManager {
         }
 
         return parsedDraft;
-      },
-      { draftId },
-    );
-  }
-  public deleteDraft(draftId: string) {
-    return this.withErrorHandler(
-      'deleteDraft',
-      async () => {
-        await this.graphClient.api(`/me/messages/${draftId}`).delete();
       },
       { draftId },
     );
@@ -1048,11 +1039,11 @@ export class OutlookMailManager implements MailManager {
         },
       })) || [];
 
-    const references: string | undefined = undefined;
-    const inReplyTo: string | undefined = undefined;
-    const listUnsubscribe: string | undefined = undefined;
-    const listUnsubscribePost: string | undefined = undefined;
-    const replyTo: string | undefined = undefined;
+    let references: string | undefined;
+    let inReplyTo: string | undefined;
+    let listUnsubscribe: string | undefined;
+    let listUnsubscribePost: string | undefined;
+    let replyTo: string | undefined;
 
     // TODO: use headers if available
     // if (headers) {

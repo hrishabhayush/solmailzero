@@ -1,4 +1,4 @@
-import { Autumn, fetchPricingTable } from 'autumn-js';
+import { fetchPricingTable } from 'autumn-js';
 import type { HonoContext } from '../ctx';
 import { env } from '../env';
 import { Hono } from 'hono';
@@ -38,7 +38,6 @@ export const autumnApi = new Hono<AutumnContext>()
             },
           },
     );
-    c.set('autumn', new Autumn({ secretKey: env.AUTUMN_SECRET_KEY }));
     await next();
   })
   .post('/customers', async (c) => {
@@ -47,7 +46,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!.customers
+      await autumn.customers
         .create({
           id: customerData.customerId,
           ...customerData.customerData,
@@ -63,7 +62,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!
+      await autumn
         .attach({
           ...sanitizedBody,
           customer_id: customerData.customerId,
@@ -79,7 +78,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!
+      await autumn
         .cancel({
           ...sanitizedBody,
           customer_id: customerData.customerId,
@@ -94,7 +93,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!
+      await autumn
         .check({
           ...sanitizedBody,
           customer_id: customerData.customerId,
@@ -110,7 +109,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!
+      await autumn
         .track({
           ...sanitizedBody,
           customer_id: customerData.customerId,
@@ -125,9 +124,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!.customers
-        .billingPortal(customerData.customerId, body)
-        .then((data) => data.data),
+      await autumn.customers.billingPortal(customerData.customerId, body).then((data) => data.data),
     );
   })
   .post('/openBillingPortal', async (c) => {
@@ -136,7 +133,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!.customers
+      await autumn.customers
         .billingPortal(customerData.customerId, {
           ...body,
           return_url: `${env.VITE_PUBLIC_APP_URL}`,
@@ -150,7 +147,7 @@ export const autumnApi = new Hono<AutumnContext>()
     if (!customerData) return c.json({ error: 'No customer ID found' }, 401);
 
     return c.json(
-      await autumn!.entities.create(customerData.customerId, body).then((data) => data.data),
+      await autumn.entities.create(customerData.customerId, body).then((data) => data.data),
     );
   })
   .get('/entities/:entityId', async (c) => {
@@ -171,7 +168,7 @@ export const autumnApi = new Hono<AutumnContext>()
     }
 
     return c.json(
-      await autumn!.entities
+      await autumn.entities
         .get(customerData.customerId, entityId, { expand })
         .then((data) => data.data),
     );
@@ -193,7 +190,7 @@ export const autumnApi = new Hono<AutumnContext>()
     }
 
     return c.json(
-      await autumn!.entities.delete(customerData.customerId, entityId).then((data) => data.data),
+      await autumn.entities.delete(customerData.customerId, entityId).then((data) => data.data),
     );
   })
   .get('/components/pricing_table', async (c) => {
@@ -201,7 +198,7 @@ export const autumnApi = new Hono<AutumnContext>()
 
     return c.json(
       await fetchPricingTable({
-        instance: autumn!,
+        instance: autumn,
         params: {
           customer_id: customerData?.customerId || undefined,
         },

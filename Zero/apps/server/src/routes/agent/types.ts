@@ -16,7 +16,6 @@ export enum OutgoingMessageType {
   Mail_List = 'zero_mail_list_threads',
   Mail_Get = 'zero_mail_get_thread',
   User_Topics = 'zero_user_topics',
-  Do_State = 'zero_do_state',
 }
 
 export type IncomingMessage =
@@ -73,14 +72,6 @@ export type OutgoingMessage =
     }
   | {
       type: OutgoingMessageType.User_Topics;
-    }
-  | {
-      type: OutgoingMessageType.Do_State;
-      isSyncing: boolean;
-      syncingFolders: string[];
-      storageSize: number;
-      counts: { label: string; count: number }[];
-      shards: number;
     };
 
 export type QueueFunc = (name: string, payload: unknown) => Promise<unknown>;

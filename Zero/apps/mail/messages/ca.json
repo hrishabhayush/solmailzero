@@ -165,13 +165,8 @@
       "attachments": "Adjunts",
       "attachmentCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "adjunts",
             "countPlural=one": "adjunt",
@@ -181,13 +176,8 @@
       ],
       "fileCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "fitxers",
             "countPlural=one": "fitxer",
@@ -259,13 +249,8 @@
       "search": "Cerca notes...",
       "noteCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "Afegeix notes",
             "countPlural=one": "# nota",
@@ -327,13 +312,8 @@
     "mail": {
       "replies": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "respostes",
             "countPlural=one": "# resposta",
@@ -436,7 +416,7 @@
       "signatures": "Signatures",
       "shortcuts": "Dreceres",
       "labels": "Etiquetes",
-      "categories": "Vistes",
+      "categories": "Categories",
       "dangerZone": "Zona perillosa",
       "deleteAccount": "Elimina el compte",
       "privacy": "Privacitat"
@@ -468,8 +448,6 @@
         "noResultsFound": "No s'han trobat resultats",
         "zeroSignature": "Signatura Zero",
         "zeroSignatureDescription": "Afegeix una signatura Zero als teus correus.",
-        "undoSendEnabled": "Desfer enviament",
-        "undoSendEnabledDescription": "Permet cancel·lar correus electrònics dins dels 30 segons després d'enviar-los.",
         "defaultEmailAlias": "Àlies de correu predeterminat",
         "selectDefaultEmail": "Selecciona el correu predeterminat",
         "defaultEmailDescription": "Aquest correu s'utilitzarà com a adreça predeterminada 'De' quan es redactin nous correus",

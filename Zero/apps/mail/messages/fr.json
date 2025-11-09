@@ -165,13 +165,8 @@
       "attachments": "Pièces jointes",
       "attachmentCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "pièces jointes",
             "countPlural=one": "pièce jointe",
@@ -181,13 +176,8 @@
       ],
       "fileCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "fichiers",
             "countPlural=one": "fichier",
@@ -259,13 +249,8 @@
       "search": "Rechercher des notes...",
       "noteCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "Ajoutez des notes",
             "countPlural=one": "# note",
@@ -327,13 +312,8 @@
     "mail": {
       "replies": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "réponses",
             "countPlural=one": "# réponse",
@@ -436,7 +416,7 @@
       "signatures": "Signatures",
       "shortcuts": "Raccourcis",
       "labels": "Étiquettes",
-      "categories": "Vues",
+      "categories": "Catégories",
       "dangerZone": "Zone dangereuse",
       "deleteAccount": "Supprimer le compte",
       "privacy": "Confidentialité"
@@ -468,8 +448,6 @@
         "noResultsFound": "Aucun résultat trouvé",
         "zeroSignature": "Signature Zero",
         "zeroSignatureDescription": "Ajouter une signature Zero à vos courriels.",
-        "undoSendEnabled": "Annuler l'envoi",
-        "undoSendEnabledDescription": "Permettre d'annuler les emails dans les 30 secondes suivant l'envoi.",
         "defaultEmailAlias": "Alias e-mail par défaut",
         "selectDefaultEmail": "Sélectionner l'e-mail par défaut",
         "defaultEmailDescription": "Cette adresse e-mail sera utilisée comme adresse d'expédition par défaut lors de la rédaction de nouveaux e-mails",

@@ -72,12 +72,12 @@ const ThreadPreview = ({ threadId }: { threadId: string }) => {
 
 const ExampleQueries = ({ onQueryClick }: { onQueryClick: (query: string) => void }) => {
   const firstRowQueries = [
-    'Find all work meetings today',
-    'Label all emails from Github as OSS',
-    'Show recent Linear feedback',
+    'Find invoice from Stripe',
+    'Show unpaid invoices',
+    'Show recent work feedback',
   ];
 
-  const secondRowQueries = ['Find receipt from OpenAI', 'What Asana projects do I have coming up'];
+  const secondRowQueries = ['Find all work meetings', 'What projects do i have coming up'];
 
   return (
     <div className="relative mt-6 flex w-full max-w-xl flex-col items-center gap-2">
@@ -293,7 +293,7 @@ export function AIChat({
               const toolParts = message.parts.filter((part) => part.type === 'tool-invocation');
 
               return (
-                <div key={`${message.id}-${index}`} className="mb-2 flex flex-col" data-message-role={message.role}>
+                <div key={`${message.id}-${index}`} className="mb-2 flex flex-col">
                   {toolParts.map(
                     (part, index) =>
                       part.toolInvocation?.result && (

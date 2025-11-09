@@ -165,13 +165,8 @@
       "attachments": "Bijlagen",
       "attachmentCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "bijlagen",
             "countPlural=one": "bijlage",
@@ -181,13 +176,8 @@
       ],
       "fileCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "bestanden",
             "countPlural=one": "bestand",
@@ -259,13 +249,8 @@
       "search": "Notities zoeken...",
       "noteCount": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "Notities toevoegen",
             "countPlural=one": "# notitie",
@@ -327,13 +312,8 @@
     "mail": {
       "replies": [
         {
-          "declarations": [
-            "input count",
-            "local countPlural = count: plural"
-          ],
-          "selectors": [
-            "countPlural"
-          ],
+          "declarations": ["input count", "local countPlural = count: plural"],
+          "selectors": ["countPlural"],
           "match": {
             "countPlural=0": "reacties",
             "countPlural=one": "# antwoord",
@@ -436,7 +416,7 @@
       "signatures": "Handtekeningen",
       "shortcuts": "Snelkoppelingen",
       "labels": "Labels",
-      "categories": "Weergaven",
+      "categories": "Categorieën",
       "dangerZone": "Gevarenzone",
       "deleteAccount": "Account verwijderen",
       "privacy": "Privacy"
@@ -468,8 +448,6 @@
         "noResultsFound": "Geen resultaten gevonden",
         "zeroSignature": "Zero-handtekening",
         "zeroSignatureDescription": "Voeg een Zero-handtekening toe aan je e-mails.",
-        "undoSendEnabled": "Verzenden ongedaan maken",
-        "undoSendEnabledDescription": "Sta toe om e-mails binnen 30 seconden na verzending te annuleren.",
         "defaultEmailAlias": "Standaard e-mailalias",
         "selectDefaultEmail": "Selecteer standaard e-mail",
         "defaultEmailDescription": "Dit e-mailadres wordt gebruikt als standaard 'Van'-adres bij het opstellen van nieuwe e-mails",

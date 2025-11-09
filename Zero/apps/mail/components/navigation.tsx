@@ -122,7 +122,7 @@ export function Navigation() {
             <NavigationMenu>
               <NavigationMenuList className="gap-1">
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-white cursor-pointer">
+                  <NavigationMenuTrigger className="bg-transparent text-white">
                     Company
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -136,7 +136,7 @@ export function Navigation() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-white cursor-pointer">
+                  <NavigationMenuTrigger className="bg-transparent text-white">
                     Resources
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -155,13 +155,15 @@ export function Navigation() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem className="bg-transparent text-white">
-                  <Button asChild variant="ghost" className="h-9 bg-transparent cursor-pointer">
-                    <a href="/pricing">Pricing</a>
-                  </Button>
+                  <a href="/pricing">
+                    <Button variant="ghost" className="h-9 bg-transparent">
+                      Pricing
+                    </Button>
+                  </a>
                 </NavigationMenuItem>
-                <NavigationMenuItem className="bg-transparent text-white cursor-pointer">
+                <NavigationMenuItem className="bg-transparent text-white">
                   <a href="/privacy">
-                    <Button variant="ghost" className="ml-1 h-9 bg-transparent">
+                    <Button variant="ghost" className="h-9 bg-transparent ml-1">
                       Privacy
                     </Button>
                   </a>
@@ -184,12 +186,12 @@ export function Navigation() {
                 <span className="ml-1 hidden lg:inline">GitHub</span>
               </div>
               <div className="flex items-center gap-1 text-sm">
-                <Star className="relative top-px size-4 fill-gray-400 duration-300 group-hover:fill-yellow-400 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+                <Star className="relative top-px size-4 fill-gray-400 transition-all duration-300 group-hover:fill-yellow-400 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
                 <AnimatedNumber value={stars} className="font-medium text-white" />
               </div>
             </a>
             <Button
-              className="h-8 bg-white text-black hover:bg-white hover:text-black cursor-pointer"
+              className="h-8 bg-white text-black hover:bg-white hover:text-black"
               onClick={() => {
                 if (session) {
                   navigate('/mail/inbox');
@@ -243,11 +245,14 @@ export function Navigation() {
             </SheetHeader>
             <div className="mt-8 flex flex-col space-y-3">
               <div className="flex flex-col space-y-3">
-                <Link to="/" onClick={() => setOpen(false)}>
+                <Link to="/" className="mt-2" onClick={() => setOpen(false)}>
                   Home
                 </Link>
-                <Link to="/pricing" onClick={() => setOpen(false)}>
+                <Link to="/pricing" className="mt-2" onClick={() => setOpen(false)}>
                   Pricing
+                </Link>
+                <Link to="/privacy" className="mt-2" onClick={() => setOpen(false)}>
+                  Privacy
                 </Link>
                 {aboutLinks.map((link) => (
                   <a key={link.title} href={link.href} className="block font-medium">
@@ -257,8 +262,8 @@ export function Navigation() {
               </div>
               <a
                 target="_blank"
-                rel="noreferrer noopener"
-                href="https://cal.com/team/0/chat"
+                rel="noreferrer"
+                href="https://cal.com/team/0"
                 className="font-medium"
               >
                 Contact Us

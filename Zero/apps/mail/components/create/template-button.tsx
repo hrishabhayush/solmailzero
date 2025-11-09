@@ -14,7 +14,7 @@ import {
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, Save, Trash2 } from 'lucide-react';
-import React, { useState, useMemo, useDeferredValue, useCallback } from 'react';
+import React, { useState, useMemo, useDeferredValue, useCallback, startTransition } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -25,20 +25,21 @@ import {
 import { Input } from '@/components/ui/input';
 import { TRPCClientError } from '@trpc/client';
 
-type EmailTemplate = {
+type RecipientField = 'to' | 'cc' | 'bcc';
+
+type Template = {
   id: string;
-  userId: string;
   name: string;
-  subject: string | null;
-  body: string | null;
-  to: string[] | null;
-  cc: string[] | null;
-  bcc: string[] | null;
-  createdAt: Date;
-  updatedAt: Date;
+  subject?: string | null;
+  body?: string | null;
+  to?: string[] | null;
+  cc?: string[] | null;
+  bcc?: string[] | null;
 };
 
-type RecipientField = 'to' | 'cc' | 'bcc';
+type TemplatesQueryData = {
+  templates: Template[];
+} | undefined;
 
 interface TemplateButtonProps {
   editor: Editor | null;
@@ -63,7 +64,7 @@ const TemplateButtonComponent: React.FC<TemplateButtonProps> = ({
   const queryClient = useQueryClient();
   const { data } = useTemplates();
   
-  const templates = (data?.templates ?? []) as EmailTemplate[];
+  const templates: Template[] = data?.templates ?? [];
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -80,10 +81,6 @@ const TemplateButtonComponent: React.FC<TemplateButtonProps> = ({
     );
   }, [deferredSearch, templates]);
 
-  const templatesById = useMemo(() => {
-    return new Map(templates.map((t) => [t.id, t] as const));
-  }, [templates]);
-
   const { mutateAsync: createTemplate } = useMutation(trpc.templates.create.mutationOptions());
   const { mutateAsync: deleteTemplateMutation } = useMutation(
     trpc.templates.delete.mutationOptions(),
@@ -98,17 +95,19 @@ const TemplateButtonComponent: React.FC<TemplateButtonProps> = ({
 
     setIsSaving(true);
     try {
-      const normalizedSubject = subject.trim() ? subject : null;
-      await createTemplate({
+      const newTemplate = await createTemplate({
         name: templateName.trim(),
+        subject: subject || '',
         body: editor.getHTML(),
         to: to.length ? to : undefined,
         cc: cc.length ? cc : undefined,
         bcc: bcc.length ? bcc : undefined,
-        ...(normalizedSubject !== null ? { subject: normalizedSubject } : {}),
       });
-      await queryClient.invalidateQueries({
-        queryKey: trpc.templates.list.queryKey(),
+      queryClient.setQueryData(trpc.templates.list.queryKey(), (old: TemplatesQueryData) => {
+        if (!old?.templates) return old;
+        return {
+          templates: [newTemplate.template, ...old.templates],
+        };
       });
       toast.success('Template saved');
       setTemplateName('');
@@ -124,18 +123,15 @@ const TemplateButtonComponent: React.FC<TemplateButtonProps> = ({
     }
   };
 
-  const handleApplyTemplate = useCallback((template: EmailTemplate) => {
+  const handleApplyTemplate = useCallback((template: Template) => {
     if (!editor) return;
-    
-    if (template.subject) setSubject(template.subject);
-    if (template.body) editor.commands.setContent(template.body, false);
-    if (template.to) setRecipients('to', template.to);
-    if (template.cc) setRecipients('cc', template.cc);
-    if (template.bcc) setRecipients('bcc', template.bcc);
-    
-    setTimeout(() => {
-      editor.chain().focus('end').run();
-    }, 200);
+    startTransition(() => {
+      if (template.subject) setSubject(template.subject);
+      if (template.body) editor.commands.setContent(template.body, false);
+      if (template.to) setRecipients('to', template.to);
+      if (template.cc) setRecipients('cc', template.cc);
+      if (template.bcc) setRecipients('bcc', template.bcc);
+    });
   }, [editor, setSubject, setRecipients]);
 
   const handleDeleteTemplate = useCallback(
@@ -157,46 +153,11 @@ const TemplateButtonComponent: React.FC<TemplateButtonProps> = ({
     [deleteTemplateMutation, queryClient, trpc.templates.list],
   );
 
-  const handleTemplateItemClick = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      const templateId = (e.currentTarget as HTMLElement).dataset.templateId;
-      if (!templateId) return;
-      const template = templatesById.get(templateId);
-      if (!template) return;
-      handleApplyTemplate(template);
-      setMenuOpen(false);
-    },
-    [handleApplyTemplate, templatesById],
-  );
-
-  const handleDeleteButtonClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      setMenuOpen(false);
-      const templateId = (e.currentTarget as HTMLButtonElement).dataset.templateId;
-      if (!templateId) return;
-      const template = templatesById.get(templateId);
-      const templateName = template?.name ?? 'this template';
-      toast(`Delete template "${templateName}"?`, {
-        duration: 10000,
-        action: {
-          label: 'Delete',
-          onClick: () => handleDeleteTemplate(templateId),
-        },
-        className: 'pointer-events-auto',
-        style: {
-          pointerEvents: 'auto',
-        },
-      });
-    },
-    [templatesById, handleDeleteTemplate],
-  );
-
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
-          <Button type="button" size={'xs'} variant={'secondary'} className="bg-background border hover:bg-gray-50 dark:hover:bg-[#404040] transition-colors cursor-pointer" disabled={isSaving}>
+          <Button size={'xs'} variant={'secondary'} disabled={isSaving}>
             Templates
           </Button>
         </DropdownMenuTrigger>
@@ -210,7 +171,7 @@ const TemplateButtonComponent: React.FC<TemplateButtonProps> = ({
           >
             <Save className="mr-2 h-3.5 w-3.5" /> Save current as template
           </DropdownMenuItem>
-           {templates.length > 0 ? (
+          {templates.length > 0 ? (
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <FileText className="mr-2 h-3.5 w-3.5" /> Use template
@@ -226,18 +187,30 @@ const TemplateButtonComponent: React.FC<TemplateButtonProps> = ({
                   />
                 </div>
                 <div className="max-h-30 overflow-y-auto">
-                  {filteredTemplates.map((t) => (
+                  {filteredTemplates.map((t: Template) => (
                     <DropdownMenuItem
                       key={t.id}
-                      data-template-id={t.id}
                       className="flex items-center justify-between gap-2"
-                      onClick={handleTemplateItemClick}
+                      onClick={() => handleApplyTemplate(t)}
                     >
                       <span className="flex-1 truncate text-left">{t.name}</span>
                       <button
                         className="p-0.5 text-muted-foreground hover:text-destructive"
-                        data-template-id={t.id}
-                        onClick={handleDeleteButtonClick}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMenuOpen(false); 
+                          toast(`Delete template "${t.name}"?`, {
+                            duration: 10000,
+                            action: {
+                              label: 'Delete',
+                              onClick: () => handleDeleteTemplate(t.id),
+                            },
+                            className: 'pointer-events-auto',
+                            style: {
+                              pointerEvents: 'auto',
+                            },
+                          });
+                        }}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>

@@ -1,7 +1,6 @@
+import { z } from 'zod';
 import { keyboardLayoutMapper } from '../utils/keyboard-layout-map';
 import { getKeyCodeFromKey } from '../utils/keyboard-utils';
-import { isMac } from '@/lib/platform';
-import { z } from 'zod';
 
 export const shortcutSchema = z.object({
   keys: z.array(z.string()),
@@ -29,19 +28,19 @@ export interface EnhancedShortcut extends Shortcut {
  */
 export function getDisplayKeysForShortcut(shortcut: Shortcut): string[] {
   const detectedLayout = keyboardLayoutMapper.getDetectedLayout();
-
-  return shortcut.keys.map((key) => {
+  
+  return shortcut.keys.map(key => {
     // Handle special modifiers first
     switch (key.toLowerCase()) {
       case 'mod':
-        return isMac ? '⌘' : 'Ctrl';
+        return navigator.platform.includes('Mac') ? '⌘' : 'Ctrl';
       case 'meta':
         return '⌘';
       case 'ctrl':
       case 'control':
         return 'Ctrl';
       case 'alt':
-        return isMac ? '⌥' : 'Alt';
+        return navigator.platform.includes('Mac') ? '⌥' : 'Alt';
       case 'shift':
         return '⇧';
       case 'escape':
@@ -68,11 +67,12 @@ export function getDisplayKeysForShortcut(shortcut: Shortcut): string[] {
  * Convert a key string to its corresponding KeyCode
  */
 
+
 /**
  * Enhance shortcuts with keyboard layout mapping
  */
 export function enhanceShortcutsWithMapping(shortcuts: Shortcut[]): EnhancedShortcut[] {
-  return shortcuts.map((shortcut) => ({
+  return shortcuts.map(shortcut => ({
     ...shortcut,
     displayKeys: getDisplayKeysForShortcut(shortcut),
     mappedKeys: keyboardLayoutMapper.mapKeys(shortcut.keys.map(getKeyCodeFromKey)),
@@ -433,5 +433,4 @@ export const keyboardShortcuts: Shortcut[] = [
 /**
  * Enhanced keyboard shortcuts with layout mapping
  */
-export const enhancedKeyboardShortcuts: EnhancedShortcut[] =
-  enhanceShortcutsWithMapping(keyboardShortcuts);
+export const enhancedKeyboardShortcuts: EnhancedShortcut[] = enhanceShortcutsWithMapping(keyboardShortcuts);

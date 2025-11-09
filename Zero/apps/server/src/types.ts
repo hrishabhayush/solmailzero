@@ -248,10 +248,3 @@ export enum EPrompts {
   Compose = 'Compose',
   //   ThreadLabels = 'ThreadLabels'
 }
-
-export interface IEmailSendBatch {
-  messageId: string;
-  connectionId: string;
-  mail?: IOutgoingMessage & { draftId?: string };
-  sendAt?: number;
-}

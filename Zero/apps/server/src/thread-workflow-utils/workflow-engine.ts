@@ -1,32 +1,14 @@
-/*
- * Licensed to Zero Email Inc. under one or more contributor license agreements.
- * You may not use this file except in compliance with the Apache License, Version 2.0 (the "License").
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Reuse or distribution of this file requires a license from Zero Email Inc.
- */
-
 import type { IGetThreadResponse } from '../lib/driver/types';
 import { workflowFunctions } from './workflow-functions';
 import { shouldGenerateDraft } from './index';
 import { connection } from '../db/schema';
-import { initTracing } from '../lib/tracing';
 
 export type WorkflowContext = {
   connectionId: string;
   threadId: string;
   thread: IGetThreadResponse;
   foundConnection: typeof connection.$inferSelect;
-  results?: Map<string, unknown>;
-  env?: unknown;
+  results?: Map<string, any>;
 };
 
 export type WorkflowStep = {
@@ -35,7 +17,7 @@ export type WorkflowStep = {
   description: string;
   enabled: boolean;
   condition?: (context: WorkflowContext) => boolean | Promise<boolean>;
-  action: (context: WorkflowContext) => Promise<unknown>;
+  action: (context: WorkflowContext) => Promise<any>;
   errorHandling?: 'continue' | 'fail';
   maxRetries?: number;
 };
@@ -60,80 +42,43 @@ export class WorkflowEngine {
   async executeWorkflow(
     workflowName: string,
     context: WorkflowContext,
-    existingResults?: Map<string, unknown>,
-  ): Promise<{ results: Map<string, unknown>; errors: Map<string, Error> }> {
+    existingResults?: Map<string, any>,
+  ): Promise<{ results: Map<string, any>; errors: Map<string, Error> }> {
     const workflow = this.workflows.get(workflowName);
     if (!workflow) {
       throw new Error(`Workflow "${workflowName}" not found`);
     }
 
-    const tracer = initTracing();
-    const workflowSpan = tracer.startSpan('workflow_execution', {
-      attributes: {
-        'workflow.name': workflowName,
-        'connection.id': context.connectionId,
-        'thread.id': context.threadId
-      }
-    });
-
-    const results = new Map<string, unknown>(existingResults || []);
+    const results = new Map<string, any>(existingResults || []);
     const errors = new Map<string, Error>();
 
-    try {
-      for (const step of workflow.steps) {
-        if (!step.enabled) {
-          console.log(`[WORKFLOW_ENGINE] Skipping disabled step: ${step.name}`);
-          continue;
-        }
-
-        const stepSpan = tracer.startSpan('workflow_step', {
-          attributes: {
-            'step.id': step.id,
-            'step.name': step.name,
-            'step.enabled': step.enabled,
-            'workflow.name': workflowName
-          }
-        });
-
-        try {
-          const shouldExecute = step.condition ? await step.condition({ ...context, results }) : true;
-          if (!shouldExecute) {
-            console.log(`[WORKFLOW_ENGINE] Condition not met for step: ${step.name}`);
-            stepSpan.setAttributes({ 'step.condition_met': false });
-            stepSpan.end();
-            break;
-          }
-
-          stepSpan.setAttributes({ 'step.condition_met': true });
-          console.log(`[WORKFLOW_ENGINE] Executing step: ${step.name}`);
-          const result = await step.action({ ...context, results });
-          results.set(step.id, result);
-          console.log(`[WORKFLOW_ENGINE] Completed step: ${step.name}`, result);
-          stepSpan.setAttributes({ 'step.success': true });
-        } catch (error) {
-          const errorObj = error instanceof Error ? error : new Error(String(error));
-          console.error(`[WORKFLOW_ENGINE] Error in step ${step.name}:`, errorObj);
-          
-          stepSpan.recordException(errorObj);
-          stepSpan.setStatus({ code: 2, message: errorObj.message });
-
-          if (step.errorHandling === 'fail') {
-            stepSpan.end();
-            throw errorObj;
-          } else {
-            errors.set(step.id, errorObj);
-          }
-        } finally {
-          stepSpan.end();
-        }
+    for (const step of workflow.steps) {
+      if (!step.enabled) {
+        console.log(`[WORKFLOW_ENGINE] Skipping disabled step: ${step.name}`);
+        continue;
       }
 
-      workflowSpan.setAttributes({ 
-        'workflow.steps_completed': results.size,
-        'workflow.errors_count': errors.size
-      });
-    } finally {
-      workflowSpan.end();
+      try {
+        const shouldExecute = step.condition ? await step.condition({ ...context, results }) : true;
+        if (!shouldExecute) {
+          console.log(`[WORKFLOW_ENGINE] Condition not met for step: ${step.name}`);
+          break;
+        }
+
+        console.log(`[WORKFLOW_ENGINE] Executing step: ${step.name}`);
+        const result = await step.action({ ...context, results });
+        results.set(step.id, result);
+        console.log(`[WORKFLOW_ENGINE] Completed step: ${step.name}`, result);
+      } catch (error) {
+        const errorObj = error instanceof Error ? error : new Error(String(error));
+        console.error(`[WORKFLOW_ENGINE] Error in step ${step.name}:`, errorObj);
+
+        if (step.errorHandling === 'fail') {
+          throw errorObj;
+        } else {
+          errors.set(step.id, errorObj);
+        }
+      }
     }
 
     return { results, errors };
@@ -142,9 +87,9 @@ export class WorkflowEngine {
   async executeWorkflowChain(
     workflowNames: string[],
     context: WorkflowContext,
-  ): Promise<{ results: Map<string, unknown>; errors: Map<string, Error> }> {
-    const sharedResults = new Map<string, unknown>();
-    const allErrors = new Map<string, Error>();
+  ): Promise<{ results: Map<string, any>; errors: Map<string, Error> }> {
+    let sharedResults = new Map<string, any>();
+    let allErrors = new Map<string, Error>();
 
     for (const workflowName of workflowNames) {
       console.log(`[WORKFLOW_ENGINE] Executing workflow in chain: ${workflowName}`);
@@ -335,31 +280,24 @@ export const createDefaultWorkflows = (): WorkflowEngine => {
       {
         id: 'get-user-labels',
         name: 'Get User Labels',
-        description: 'Retrieves existing labels from user account',
+        description: 'Retrieves user-defined labels',
         enabled: true,
         action: workflowFunctions.getUserLabels,
       },
       {
-        id: 'get-user-topics',
-        name: 'Get User Topics',
-        description: 'Retrieves user-defined topics for potential new labels',
+        id: 'generate-labels',
+        name: 'Generate Labels',
+        description: 'Generates appropriate labels for the thread',
         enabled: true,
-        action: workflowFunctions.getUserTopics,
-      },
-      {
-        id: 'generate-label-suggestions',
-        name: 'Generate Label Suggestions',
-        description: 'Generates appropriate label suggestions for the thread',
-        enabled: true,
-        action: workflowFunctions.generateLabelSuggestions,
+        action: workflowFunctions.generateLabels,
         errorHandling: 'continue',
       },
       {
-        id: 'sync-labels',
-        name: 'Sync Labels',
-        description: 'Creates missing labels and applies them to the thread',
+        id: 'apply-labels',
+        name: 'Apply Labels',
+        description: 'Applies generated labels to the thread',
         enabled: true,
-        action: workflowFunctions.syncLabels,
+        action: workflowFunctions.applyLabels,
         errorHandling: 'continue',
       },
       {

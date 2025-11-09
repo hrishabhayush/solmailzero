@@ -19,6 +19,7 @@ import { useStats } from '@/hooks/use-stats';
 import SidebarLabels from './sidebar-labels';
 import { useCallback, useRef } from 'react';
 import { BASE_URL } from '@/lib/constants';
+import { useQueryState } from 'nuqs';
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -54,6 +55,7 @@ export function NavMain({ items }: NavMainProps) {
   const location = useLocation();
   const pathname = location.pathname;
   const searchParams = new URLSearchParams();
+  const [category] = useQueryState('category');
 
   const trpc = useTRPC();
   const { data: intercomToken } = useQuery(trpc.user.getIntercomToken.queryOptions());
@@ -106,7 +108,9 @@ export function NavMain({ items }: NavMainProps) {
       // Handle settings navigation
       if (item.isSettingsButton) {
         // Include current path with category query parameter if present
-        const currentPath = pathname;
+        const currentPath = category
+          ? `${pathname}?category=${encodeURIComponent(category)}`
+          : pathname;
         return `${item.url}?from=${encodeURIComponent(currentPath)}`;
       }
 
@@ -133,9 +137,14 @@ export function NavMain({ items }: NavMainProps) {
         return `${item.url}?from=/mail`;
       }
 
+      // Handle category links
+      if (item.id === 'inbox' && category) {
+        return `${item.url}?category=${encodeURIComponent(category)}`;
+      }
+
       return item.url;
     },
-    [pathname, searchParams, isValidInternalUrl],
+    [pathname, category, searchParams, isValidInternalUrl],
   );
 
   const { data: activeAccount } = useActiveConnection();
@@ -163,22 +172,12 @@ export function NavMain({ items }: NavMainProps) {
   );
 
   const onSubmit = async (data: LabelType) => {
-    try {
-      const promise = createLabel(data).then(async (result) => {
-        await refetch();
-        return result;
-      });
-      
-      toast.promise(promise, {
-        loading: 'Creating label...',
-        success: 'Label created successfully',
-        error: 'Failed to create label',
-      });
-      
-      await promise;
-    } catch (error) {
-      console.error('Failed to create label:', error);
-    }
+    toast.promise(createLabel(data), {
+      loading: 'Creating label...',
+      success: 'Label created successfully',
+      error: 'Failed to create label',
+      finally: () => {refetch()},
+    });
   };
 
   return (

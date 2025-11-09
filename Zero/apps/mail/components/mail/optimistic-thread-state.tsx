@@ -82,11 +82,6 @@ export function useOptimisticThreadState(threadId: string) {
           states.shouldHide = true;
           states.optimisticDestination = 'inbox';
           break;
-
-        case 'DELETE_DRAFT':
-          states.shouldHide = true;
-          states.isRemoving = true;
-          break;
       }
     });
 

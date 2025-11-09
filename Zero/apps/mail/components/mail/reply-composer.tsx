@@ -1,4 +1,3 @@
-import { useUndoSend } from '@/hooks/use-undo-send';
 import { constructReplyBody, constructForwardBody } from '@/lib/utils';
 import { useActiveConnection } from '@/hooks/use-connections';
 import { useEmailAliases } from '@/hooks/use-email-aliases';
@@ -37,7 +36,6 @@ export default function ReplyCompose({ messageId }: ReplyComposeProps) {
   const { data: activeConnection } = useActiveConnection();
   const { data: settings, isLoading: settingsLoading } = useSettings();
   const { data: session } = useSession();
-  const { handleUndoSend } = useUndoSend();
 
   // Find the specific message to reply to
   const replyToMessage =
@@ -105,7 +103,6 @@ export default function ReplyCompose({ messageId }: ReplyComposeProps) {
     subject: string;
     message: string;
     attachments: File[];
-    scheduleAt?: string;
   }) => {
     if (!replyToMessage || !activeConnection?.email) return;
 
@@ -180,7 +177,7 @@ export default function ReplyCompose({ messageId }: ReplyComposeProps) {
               //   replyToMessage.decodedBody,
             );
 
-      const result = await sendEmail({
+      await sendEmail({
         to: toRecipients,
         cc: ccRecipients,
         bcc: bccRecipients,
@@ -202,7 +199,6 @@ export default function ReplyCompose({ messageId }: ReplyComposeProps) {
         threadId: replyToMessage?.threadId,
         isForward: mode === 'forward',
         originalMessage: replyToMessage.decodedBody,
-        scheduleAt: data.scheduleAt,
       });
 
       posthog.capture('Reply Email Sent');
@@ -210,16 +206,7 @@ export default function ReplyCompose({ messageId }: ReplyComposeProps) {
       // Reset states
       setMode(null);
       await refetch();
-      
-      handleUndoSend(result, settings, {
-        to: data.to,
-        cc: data.cc,
-        bcc: data.bcc,
-        subject: data.subject,
-        message: data.message,
-        attachments: data.attachments,
-        scheduleAt: data.scheduleAt,
-      });
+      toast.success(m['pages.createEmail.emailSent']());
     } catch (error) {
       console.error('Error sending email:', error);
       toast.error(m['pages.createEmail.failedToSendEmail']());

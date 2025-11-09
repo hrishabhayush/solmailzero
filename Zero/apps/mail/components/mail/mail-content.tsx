@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { defaultUserSettings } from '@zero/server/schemas';
+import { fixNonReadableColors } from '@/lib/email-utils';
 import { useTRPC } from '@/providers/query-provider';
 import { getBrowserTimezone } from '@/lib/timezones';
 import { useSettings } from '@/hooks/use-settings';
@@ -106,6 +107,33 @@ export function MailContent({ id, html, senderEmail }: MailContentProps) {
     shadowRootRef.current.innerHTML = processedData.html;
   }, [processedData]);
 
+  useEffect(() => {
+    if (!shadowRootRef.current) return;
+
+    const root = shadowRootRef.current;
+
+    const applyFix: () => void = () => {
+      const topLevelEls = Array.from(root.children) as HTMLElement[];
+      topLevelEls.forEach((el) => {
+        try {
+          fixNonReadableColors(el, {
+            defaultBackground: resolvedTheme === 'dark' ? 'rgb(10,10,10)' : '#ffffff',
+          });
+        } catch (err) {
+          console.error('Failed to fix colors in email content:', err);
+        }
+      });
+    };
+
+    requestAnimationFrame(applyFix);
+  }, [processedData, resolvedTheme]);
+
+  useEffect(() => {
+    if (isTrustedSender || temporaryImagesEnabled) {
+      setCspViolation(false);
+    }
+  }, [isTrustedSender, temporaryImagesEnabled]);
+
   const handleImageError = useCallback(
     (e: Event) => {
       const target = e.target as HTMLImageElement;
@@ -122,10 +150,7 @@ export function MailContent({ id, html, senderEmail }: MailContentProps) {
   useEffect(() => {
     if (!shadowRootRef.current) return;
 
-    const root = shadowRootRef.current;
-
-    // Add event listeners for image errors and link clicks
-    root.addEventListener('error', handleImageError, true);
+    shadowRootRef.current.addEventListener('error', handleImageError, true);
 
     const handleClick = (e: Event) => {
       const target = e.target as HTMLElement;
@@ -140,19 +165,13 @@ export function MailContent({ id, html, senderEmail }: MailContentProps) {
       }
     };
 
-    root.addEventListener('click', handleClick);
+    shadowRootRef.current.addEventListener('click', handleClick);
 
     return () => {
-      root.removeEventListener('error', handleImageError, true);
-      root.removeEventListener('click', handleClick);
+      shadowRootRef.current?.removeEventListener('error', handleImageError, true);
+      shadowRootRef.current?.removeEventListener('click', handleClick);
     };
-  }, [processedData, handleImageError]);
-
-  useEffect(() => {
-    if (isTrustedSender || temporaryImagesEnabled) {
-      setCspViolation(false);
-    }
-  }, [isTrustedSender, temporaryImagesEnabled]);
+  }, [handleImageError, processedData]);
 
   return (
     <>
@@ -181,7 +200,7 @@ export function MailContent({ id, html, senderEmail }: MailContentProps) {
           </button>
         </div>
       )}
-      <div ref={hostRef} className={cn('mail-content w-full flex-1 overflow-scroll no-scrollbar px-4 text-black dark:text-white')} />
+      <div ref={hostRef} className={cn('mail-content w-full flex-1 overflow-scroll no-scrollbar px-4')} />
     </>
   );
 }

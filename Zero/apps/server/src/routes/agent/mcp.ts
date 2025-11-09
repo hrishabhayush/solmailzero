@@ -15,9 +15,9 @@
  */
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { getThread, getZeroAgent } from '../../lib/server-utils';
 import { composeEmail } from '../../trpc/routes/ai/compose';
 import { getCurrentDateContext } from '../../lib/prompts';
+import { getZeroAgent } from '../../lib/server-utils';
 import { connection } from '../../db/schema';
 import { FOLDERS } from '../../lib/utils';
 import { env } from 'cloudflare:workers';
@@ -85,7 +85,8 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
           };
         }
         const response = await env.VECTORIZE.getByIds([s.id]);
-        const { result: thread } = await getThread(this.activeConnectionId, s.id);
+        const driver = await getZeroAgent(this.activeConnectionId);
+        const thread = await driver.getThread(s.id);
         if (response.length && response?.[0]?.metadata?.['summary'] && thread?.latest?.subject) {
           const result = response[0].metadata as { summary: string; connection: string };
           if (result.connection !== this.activeConnectionId) {
@@ -186,7 +187,7 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
       },
     );
 
-    const { stub: agent } = await getZeroAgent(_connection.id);
+    const agent = await getZeroAgent(_connection.id);
 
     this.server.registerTool(
       'composeEmail',
@@ -327,7 +328,7 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
         });
         const content = await Promise.all(
           result.threads.map(async (thread) => {
-            const { result: loadedThread } = await getThread(this.activeConnectionId!, thread.id);
+            const loadedThread = await agent.getThread(thread.id);
             return [
               {
                 type: 'text' as const,
@@ -362,7 +363,7 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
         },
       },
       async (s) => {
-        const { result: thread } = await getThread(this.activeConnectionId!, s.threadId);
+        const thread = await agent.getThread(s.threadId);
         const initialResponse = [
           {
             type: 'text' as const,
@@ -400,9 +401,7 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
         },
       },
       async (s) => {
-        await Promise.all(
-          s.threadIds.map((threadId) => agent.modifyThreadLabelsInDB(threadId, [], ['UNREAD'])),
-        );
+        await agent.modifyLabels(s.threadIds, [], ['UNREAD']);
         return {
           content: [
             {
@@ -423,9 +422,7 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
         },
       },
       async (s) => {
-        await Promise.all(
-          s.threadIds.map((threadId) => agent.modifyThreadLabelsInDB(threadId, ['UNREAD'], [])),
-        );
+        await agent.modifyLabels(s.threadIds, ['UNREAD'], []);
         return {
           content: [
             {
@@ -448,11 +445,7 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
         },
       },
       async (s) => {
-        await Promise.all(
-          s.threadIds.map((threadId) =>
-            agent.modifyThreadLabelsInDB(threadId, s.addLabelIds, s.removeLabelIds),
-          ),
-        );
+        await agent.modifyLabels(s.threadIds, s.addLabelIds, s.removeLabelIds);
         return {
           content: [
             {
@@ -568,6 +561,72 @@ export class ZeroMCP extends McpAgent<typeof env, Record<string, unknown>, { use
         }
       },
     );
+
+    // this.server.registerTool(
+    //   'bulkDelete',
+    //   {
+    //     description: 'Move multiple threads to trash',
+    //     inputSchema: {
+    //       threadIds: z.array(z.string()),
+    //     },
+    //   },
+    //   async (s) => {
+    //     try {
+    //       await agent.modifyLabels(s.threadIds, ['TRASH'], ['INBOX']);
+    //       return {
+    //         content: [
+    //           {
+    //             type: 'text',
+    //             text: 'Threads moved to trash',
+    //           },
+    //         ],
+    //       };
+    //     } catch (e) {
+    //       console.error(e);
+    //       return {
+    //         content: [
+    //           {
+    //             type: 'text',
+    //             text: 'Failed to move threads to trash',
+    //           },
+    //         ],
+    //       };
+    //     }
+    //   },
+    // );
+
+    // this.server.registerTool(
+    //   'bulkArchive',
+    //   {
+    //     description: 'Archive multiple email threads',
+    //     inputSchema: {
+    //       threadIds: z.array(z.string()),
+    //     },
+    //   },
+    //   async (s) => {
+    //     try {
+    //       await agent.modifyLabels(s.threadIds, [], ['INBOX']);
+    //       return {
+    //         content: [
+    //           {
+    //             type: 'text',
+    //             text: 'Threads archived',
+    //           },
+    //         ],
+    //       };
+    //     } catch (e) {
+    //       console.error(e);
+    //       return {
+    //         content: [
+    //           {
+    //             type: 'text',
+    //             text: 'Failed to archive threads',
+    //           },
+    //         ],
+    //       };
+    //     }
+    //   },
+    // );
     this.ctx.waitUntil(conn.end());
   }
 }

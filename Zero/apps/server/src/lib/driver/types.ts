@@ -74,7 +74,6 @@ export interface MailManager {
     nextPageToken: string | null;
   }>;
   delete(id: string): Promise<void>;
-  deleteDraft(id: string): Promise<void>;
   list(params: {
     folder: string;
     query?: string;
@@ -116,7 +115,6 @@ export interface MailManager {
   getEmailAliases(): Promise<{ email: string; name?: string; primary?: boolean }[]>;
   revokeToken(token: string): Promise<boolean>;
   deleteAllSpam(): Promise<DeleteAllSpamResponse>;
-  getRawEmail(id: string): Promise<string>;
 }
 
 export interface IGetThreadsResponse {
