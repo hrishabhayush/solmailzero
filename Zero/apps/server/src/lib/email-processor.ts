@@ -18,8 +18,7 @@ export function preprocessEmailHtml(html: string): string {
       'img',
       'title',
       'details',
-      'summary',
-      'style',
+      'summary'
     ]),
 
     allowedAttributes: {

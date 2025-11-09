@@ -33,7 +33,7 @@ export const sanitizeTipTapHtml = async (
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
-      img: ['src', 'alt', 'width', 'height', 'style'],
+      img: ['src', 'alt', 'width', 'height'],
     },
     allowedSchemes: ['http', 'https', 'cid', 'data'],
   });

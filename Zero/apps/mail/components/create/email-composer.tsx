@@ -529,6 +529,10 @@ export function EmailComposer({
   }, [emailData]);
 
   const handleAiGenerate = async () => {
+    if (!activeConnection) {
+      toast.error('No active connection');
+      return;
+    }
     try {
       setIsLoading(true);
       setAiIsLoading(true);
