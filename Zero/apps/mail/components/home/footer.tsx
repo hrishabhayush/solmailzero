@@ -3,7 +3,7 @@ import { Twitter } from '../icons/icons';
 const socialLinks = [
   {
     name: 'Twitter',
-    href: 'https://x.com/mail0dotcom',
+    href: 'https://x.com/',
     icon: Twitter,
   },
 ];
@@ -21,7 +21,7 @@ export default function Footer() {
 
         <div className="inline-flex items-center justify-center gap-4">
           <a href="/">
-            <img src="/white-icon.svg" alt="logo" width={20} height={20} />
+            <img src="/new-white-icon.png" alt="logo" width={20} height={20} />
           </a>
           {socialLinks.map((social) => (
             <a

@@ -113,11 +113,8 @@ export function Navigation() {
       <header className="fixed left-[50%] z-50 hidden w-full max-w-4xl translate-x-[-50%] items-center justify-center px-4 pt-6 lg:flex">
         <nav className="border-input/50 flex w-full max-w-4xl items-center justify-between gap-2 rounded-xl border-t bg-[#1E1E1E] p-3 px-6">
           <div className="flex items-center gap-6">
-            <Link to="/" className="relative bottom-1 cursor-pointer">
-              <img src="white-icon.svg" alt="Zero Email" width={22} height={22} />
-              <span className="text-muted-foreground absolute -right-[-0.5px] text-[10px]">
-                beta
-              </span>
+            <Link to="/" className="relative cursor-pointer">
+              <img src="new-white-icon.png" alt="Zero Email" width={30} height={30} />
             </Link>
             <NavigationMenu>
               <NavigationMenuList className="gap-1">
@@ -227,7 +224,7 @@ export function Navigation() {
               <SheetTitle>
                 <Link to="/" onClick={() => setOpen(false)}>
                   <img
-                    src="white-icon.svg"
+                    src="new-white-icon.png"
                     alt="Zero Email"
                     className="hidden object-contain dark:block"
                     width={22}

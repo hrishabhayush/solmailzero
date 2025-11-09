@@ -31,7 +31,7 @@ const AIToggleButton = () => {
                   className="block dark:hidden"
                 />
                 <img
-                  src="/white-icon.svg"
+                  src="/new-white-icon.png"
                   alt="AI Assistant"
                   width={22}
                   height={22}

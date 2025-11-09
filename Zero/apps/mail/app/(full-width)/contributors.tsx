@@ -392,7 +392,7 @@ export default function OpenPage() {
                       className="object-contain dark:hidden"
                     />
                     <img
-                      src="/white-icon.svg"
+                      src="/new-white-icon.png"
                       alt="0.email Logo"
                       className="hidden object-contain dark:block"
                     />

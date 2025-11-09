@@ -47,7 +47,7 @@ const getProviderIcon = (providerId: string, className?: string): ReactNode => {
       return (
         <>
           <img
-            src="/white-icon.svg"
+            src="/new-white-icon.png"
             alt="Zero"
             width={15}
             height={15}

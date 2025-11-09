@@ -275,7 +275,7 @@ export function AIChat({
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="relative mb-4 h-[44px] w-[44px]">
                 <img src="/black-icon.svg" alt="Zero Logo" className="dark:hidden" />
-                <img src="/white-icon.svg" alt="Zero Logo" className="hidden dark:block" />
+                <img src="/new-white-icon.png" alt="Zero Logo" className="hidden dark:block" />
               </div>
               <p className="mb-1 mt-2 hidden text-center text-sm font-medium text-black md:block dark:text-white">
                 Ask anything about your emails

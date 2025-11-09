@@ -1026,7 +1026,7 @@ export default function HomeContent() {
             className="flex items-center justify-center"
           >
             <h1 className="text-lg font-light text-white/40 md:text-xl">
-              AI email chat with natural language
+              Payment infrastructure for cold emails
             </h1>
           </motion.div>
           <motion.div
@@ -1035,7 +1035,7 @@ export default function HomeContent() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-2 flex flex-col items-center justify-center md:mt-8"
           >
-            <h1 className="text-4xl font-medium text-white md:text-6xl">Ask away</h1>
+            <h1 className="text-4xl font-medium text-white md:text-6xl"></h1>
             <h1 className="mb-4 text-4xl font-medium text-white/40 md:text-6xl">
               Get your answers
             </h1>
@@ -1177,7 +1177,7 @@ export default function HomeContent() {
                 </div>
                 <div className="relative flex h-full flex-1 flex-col items-center justify-between gap-8 self-stretch overflow-hidden px-5 py-4">
                   <img
-                    src="/white-icon.svg"
+                    src="/new-white-icon.png"
                     alt="chat"
                     width={28}
                     height={28}
